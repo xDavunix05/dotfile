@@ -1,0 +1,55 @@
+{
+    // Telemetry settings
+    "icon_theme": "Material Icon Theme",
+    "telemetry": {
+        "diagnostics": false,
+        "metrics": false
+    },
+
+    // Editor settings
+    "buffer_font_size": null,
+    "buffer_font_family": "Fira Code",
+    "tab_size": 4,
+
+    // UI settings
+    "ui_font_size": 17,
+    "tabs": {
+        "file_icons": true
+    },
+
+    // Agent (AI assistant) settings
+    "agent_font_size": 15,
+    "play_sound_when_agent_done": true,
+
+    // Inline assistant settings
+    "inline": {
+        "enabled": true,
+        "update_debounce_ms": 100,
+        "padding": 2,
+        "min_column": 80
+    },
+
+    // Theme settings
+    "theme": {
+        "mode": "system",
+        "light": "Catppuccin Frappé - No Italics",
+        "dark": "One Dark"
+    },
+
+    // Terminal settings
+    "terminal": {
+        "font_family": "Fira Code",
+        "font_size": 12,
+        "font_fallbacks": ["FiraCode Nerd Font"],
+        "font_weight": 400,
+        "max_scroll_history_lines": 10000
+    },
+    "git": {
+        "enabled": true,
+        "show_inline_blame": true, // Show who last edited a line
+        "show_status_in_tab_bar": true // Git indicators in tabs
+    },
+
+    // Debugger support
+    "debuggers": ["gdb", "lldb"]
+}

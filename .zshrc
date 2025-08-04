@@ -1,3 +1,7 @@
+#Auto Start Tmux
+if command -v tmux >/dev/null 2>&1; then
+  [ -z "$TMUX" ] && exec tmux
+fi
 ################################
 # Zsh options
 ################################
@@ -35,6 +39,9 @@ alias gb='git branch'         # List branches
 alias gco='git checkout'      # Switch branches
 alias gl='git log --oneline'  # Compact log
 alias gr='git remote' # Remote 
+
+alias exploitdb='cd /usr/share/exploitdb/'
+
 ################################
 # History config
 ################################
@@ -61,22 +68,21 @@ fi
 # Completion setup
 ################################
 #compinit -d ~/.cache/zcompdump
-autoload -Uz compinit
-compinit -d ~/.cache/zcompdump/.zcompdump-${HOST}
+#zstyle ':completion:*' max-errors 2
+#zstyle ':completion:*' completer _expand _complete
 zstyle ':completion:*' cache-path ~/.cache/zcompdump
-zstyle ':completion:*' completer _expand _complete
+zstyle ':completion:*' completer _expand _complete _ignored
 zstyle ':completion:*' format '%F{magenta}>>> %F{green}%d%F{magenta} <<<%f'
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-zstyle ':completion:*' max-errors 1
 zstyle ':completion:*' menu no
 zstyle ':completion:*' list-max 10000
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' verbose true
+zstyle ':completion:*' verbose yes
 zstyle ':completion:*' list-prompt ''
-
-
+autoload -Uz compinit && compinit
+compinit -d ~/.cache/zcompdump/.zcompdump-${HOST}
 ################################
 # Wordchars and prompt tweaks
 ################################
@@ -88,7 +94,7 @@ WORDCHARS=${WORDCHARS//\/}      # remove '/' from word characters
 
 
 NEWLINE_BEFORE_PROMPT=yes
-PROMPT='%F{orange}$(status_info)[%n@%m]%f%F{blue}:%~%f
+PROMPT='[%n@%m]%f%F{blue}:%~%f
 %F{green}➜%f '
 
 
@@ -121,10 +127,11 @@ export MARIADB_HISTFILE=$HOME/.history/.mariadb_history
 ################################
 print -P "%F{50}$(grep -oP '(?<=^NAME=\")[^\"]+' /etc/os-release)%f"
 
-status_info() {
-  if sudo -n true 2>/dev/null; then
-    echo '%{%F{red}%}(sudo)%{%f%} '
-  else
-    echo ''
-  fi
-}
+#status_info() {
+#  if sudo -n true 2>/dev/null; then
+#    echo '%{%F{red}%}(sudo)%{%f%} '
+#  else
+#    echo ''
+#  fi
+#}
+

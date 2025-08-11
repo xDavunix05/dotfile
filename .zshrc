@@ -38,9 +38,11 @@ alias gpl='git pull'          # Pull from remote
 alias gb='git branch'         # List branches
 alias gco='git checkout'      # Switch branches
 alias gl='git log --oneline'  # Compact log
-alias gr='git remote' # Remote 
+alias gr='git remote' # Remote
 
+#Documentation
 alias exploitdb='cd /usr/share/exploitdb/'
+alias pydb='cd /usr/share/doc/python/html/'
 
 ################################
 # History config
@@ -91,15 +93,34 @@ WORDCHARS=${WORDCHARS//\/}      # remove '/' from word characters
 ################################
 # Prompt config
 ################################
+git_branch() {
+  local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
 
+  if [[ -z $branch ]]; then
+    return
+  fi
 
-NEWLINE_BEFORE_PROMPT=yes
-PROMPT='[%n@%m]%f%F{blue}:%~%f
-%F{green}➜%f '
+  if [[ $branch == "HEAD" ]]; then
+    local commit_hash=$(git rev-parse --short HEAD 2>/dev/null)
+    local detached="DETACHED:$(echo "$commit_hash" | tr '[:lower:]' '[:upper:]')"
+    echo " %B%F{red}${detached} ⦿%f%b"
+  else
+    local branch_upper=$(echo "$branch" | tr '[:lower:]' '[:upper:]')
+    echo " %B%F{cyan}${branch_upper} ⦿%f%b"
+  fi
+}
 
-
+PROMPT="[%F{213}%1~%f]\$(git_branch) %B➤ %b"
+# Automatically update $PYTHON based on virtualenv
+precmd() {
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        export PYTHON="$VIRTUAL_ENV/bin/python"
+    else
+        unset PYTHON
+    fi
+}
 ################################
-# Keybind 
+# Keybind
 ################################
 bindkey -e
 bindkey ' ' magic-space
@@ -126,12 +147,23 @@ export MARIADB_HISTFILE=$HOME/.history/.mariadb_history
 # Function
 ################################
 print -P "%F{50}$(grep -oP '(?<=^NAME=\")[^\"]+' /etc/os-release)%f"
+print -P "[%n@%m]"
 
-#status_info() {
-#  if sudo -n true 2>/dev/null; then
-#    echo '%{%F{red}%}(sudo)%{%f%} '
-#  else
-#    echo ''
-#  fi
-#}
+function print_os_user_info() {
+  print -P "%F{50}$(grep -oP '(?<=^NAME=\")[^\"]+' /etc/os-release)%f"
+  print -P "[%n@%m]"
+}
+
+function clear() {
+  command clear   # run the real clear
+  print_os_user_info  # print your info again
+}
+
+status_info() {
+  if sudo -n true 2>/dev/null; then
+    echo '%{%F{red}%}(sudo)%{%f%} '
+  else
+    echo ''
+  fi
+}
 

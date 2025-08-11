@@ -1,0 +1,92 @@
+# Terminal and features
+set -g default-terminal "tmux-256color"
+set -as terminal-features ',alacritty*:RGB'
+set -g cursor-style blinking-underline
+set -g mouse off
+
+# Prefix key
+unbind C-b
+set -g prefix `
+bind ` send-prefix
+
+# Vim style pane selection
+bind h select-pane -L
+bind l select-pane -R
+bind j select-pane -D
+bind k select-pane -U
+
+# Window switching
+bind -n S-Down new-window
+bind -n S-Left previous-window
+bind -n S-Right next-window
+
+# Use Alt-arrow keys without prefix to switch panes
+bind -n M-Left select-pane -L
+bind -n M-Right select-pane -R
+bind -n M-Up select-pane -U
+bind -n M-Down select-pane -D
+
+# Shift + Alt + vim keys to swap windows
+bind -n M-H swap-window -t -1
+bind -n M-L swap-window -t +1
+
+# Split panes
+bind -n C-, split-window -h
+bind -n C-. split-window -v
+
+# Plugins
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'srathbone/tmux-online-status'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'tmux-plugins/tmux-yank'
+set -g @plugin 'MunifTanjim/tmux-mode-indicator'
+
+
+# General settings
+set -g history-limit 10000
+set -sg escape-time 1
+set -g base-index 0
+setw -g pane-base-index 1
+set -g renumber-windows on
+set -g status-interval 0
+setw -g monitor-bell on
+set -g @online_icon "#[fg=#73d216]🟢"
+set -g @offline_icon "#[fg=#fc4138]🔴"
+setw -g aggressive-resize on
+
+# Status bar & theme
+set -g status-left "#[fg=#2e3440,bg=#e0b589,bold]  #I.#P  #[default]"
+set -g status-right "#[default]#{online_status}#[default] #[fg=#00ffff]#(tmux display -p '#{pane_current_command}' | tr a-z A-Z)#[default]  🗗 :#[bold]#S #[bold]⌛#[nobold]#(uptime -p | sed 's/^up //; s/ hours\\?/h/; s/ minutes\\?/m/; s/,//g; s/\\([0-9]\\)h/0\\1h/; s/ \\([0-9]\\)m/ 0\\1m/')#[bold] 💻#[nobold] #(hostname)#[bold] 🖧#[nobold]  #(ip -4 addr show scope global | grep inet | awk '{print \$2}' | cut -d/ -f1 | head -n1) 🖴  #(df -P -h / | awk 'NR==2 {print \$3 \"/\" \$2}') #{tmux_mode_indicator}"
+
+#set -g status-position top
+set -g status-right-length 200
+set -g status-left-length 200
+set -g status-justify left
+set -g status-style ""
+
+# Pane borders
+set -g pane-border-status top
+set -g pane-border-format "#{?pane_active,#[fg=#5294e2]>>> ACTIVE <<<, }"
+set -g pane-border-style "fg=colour250"
+set -g pane-active-border-style "fg=colour201"
+
+# Window status
+
+set -g window-status-format "#[fg=#d8dee9]  #I #W  "
+set -g window-status-current-format "#[fg=#2e3440,bg=#bf616a,bold]  #I #W  #[default] "
+
+setw -g window-status-bell-style "fg=#222222,bg=#c17979,bold"
+setw -g window-status-activity-style "fg=#222222,bg=#c17979,bold"
+set -g window-status-separator ''
+
+# Messaging style
+set -g message-style "fg=#cccccc,bg=#303030,bright"
+
+# Clipboard support (xsel)
+bind -T copy-mode-vi y send -X copy-pipe-and-cancel "xsel -i -p -b"
+bind p run "xsel -o -b | tmux load-buffer - ; tmux paste-buffer"
+bind -T copy-mode-vi v send -X begin-selection
+bind -T copy-mode-vi C-v send -X rectangle-toggle
+
+# TPM plugin manager
+run '~/.tmux/plugins/tpm/tpm'
